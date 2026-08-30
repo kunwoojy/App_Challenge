@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import BrailleCell from "../BrailleCell";
+import BrailleCell from "./BrailleCell";
 import {
   englishToBrailleCells,
   cellsToUnicode,
