@@ -6,7 +6,7 @@ import {
   brailleToEnglish,
   dotsToMask,
   maskToUnicode,
-} from "../braille";
+} from "./braille";
 
 function CopyButton({ text, label = "Copy" }) {
   const [copied, setCopied] = useState(false);
