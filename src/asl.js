@@ -13,7 +13,7 @@
 
 function letterFrame(letter) {
   return {
-    src: `/signs/letters/${letter}.svg`,
+    src: `/signs/letters/${letter}.png`,
     alt: `Fingerspelled letter ${letter.toUpperCase()}`,
   };
 }
