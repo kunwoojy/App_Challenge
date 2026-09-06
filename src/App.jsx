@@ -7,6 +7,8 @@ import {
   dotsToMask,
   maskToUnicode,
 } from "./braille";
+import { englishToSignSteps, flattenSteps } from "./asl";
+import SignPlayer from "./SignPlayer";
 
 function CopyButton({ text, label = "Copy" }) {
   const [copied, setCopied] = useState(false);
@@ -144,6 +146,49 @@ function BrailleToEnglish() {
   );
 }
 
+function EnglishToSign() {
+  const [text, setText] = useState("Hello, thank you");
+  const steps = useMemo(() => englishToSignSteps(text), [text]);
+  const frames = useMemo(() => flattenSteps(steps), [steps]);
+
+  return (
+    <div className="panel">
+      <div className="field">
+        <label htmlFor="sign-input">English text</label>
+        <textarea
+          id="sign-input"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type a message…"
+          rows={3}
+        />
+      </div>
+
+      <div className="field">
+        <div className="field-label-row">
+          <span className="field-label">Word breakdown</span>
+        </div>
+        <div className="sign-steps">
+          {steps.length === 0 && <span className="empty-hint">Word-by-word breakdown will appear here</span>}
+          {steps.map((step, i) => (
+            <span key={i} className={`sign-chip ${step.mode === "sign" ? "sign-chip--word" : ""}`}>
+              {step.word}
+              <em>{step.mode === "sign" ? "whole sign" : "fingerspelled"}</em>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="field">
+        <div className="field-label-row">
+          <span className="field-label">Signed sequence</span>
+        </div>
+        <SignPlayer frames={frames} />
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [mode, setMode] = useState("e2b");
 
@@ -174,16 +219,27 @@ function App() {
         >
           Braille <span className="lever-arrow">&rarr;</span> English
         </button>
+        <button
+          role="tab"
+          aria-selected={mode === "e2s"}
+          className={`lever ${mode === "e2s" ? "lever--active" : ""}`}
+          onClick={() => setMode("e2s")}
+        >
+          English <span className="lever-arrow">&rarr;</span> Sign
+        </button>
       </div>
 
       <main className="plate">
         <div className="plate-sweep" aria-hidden="true" />
-        {mode === "e2b" ? <EnglishToBraille /> : <BrailleToEnglish />}
+        {mode === "e2b" && <EnglishToBraille />}
+        {mode === "b2e" && <BrailleToEnglish />}
+        {mode === "e2s" && <EnglishToSign />}
       </main>
 
       <footer className="footer">
-        Grade&nbsp;1 only — one cell per letter. The capital sign (dot&nbsp;6) marks the next letter as
-        uppercase; the number sign (dots&nbsp;3‑4‑5‑6) starts a run of digits.
+        {mode === "e2s"
+          ? "Words in the starter dictionary show a real sign; everything else is fingerspelled letter-by-letter. Sign images here are placeholders — swap the files in public/signs/ with real, licensed ASL images or clips."
+          : "Grade\u00A01 only — one cell per letter. The capital sign (dot\u00A06) marks the next letter as uppercase; the number sign (dots\u00A03-4-5-6) starts a run of digits."}
       </footer>
     </div>
   );
