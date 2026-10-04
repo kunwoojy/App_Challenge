@@ -37,10 +37,13 @@ function SignFigure({ motion, hands }) {
 }
 
 function LetterCard({ letter }) {
+  const file = letter.toLowerCase() + ".png";
   return (
-    <div className="sign-stage-img sign-letter" aria-hidden="true">
-      {letter}
-    </div>
+    <img
+      src={import.meta.env.BASE_URL + "signs/letters/" + file}
+      alt={"Fingerspelled letter " + letter}
+      className="sign-stage-img"
+    />
   );
 }
 
