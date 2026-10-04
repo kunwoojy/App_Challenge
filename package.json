@@ -4,11 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/copy-liblouis.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/copy-liblouis.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "liblouis": "^0.4.0",
+    "liblouis-build": "3.2.0-rc",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

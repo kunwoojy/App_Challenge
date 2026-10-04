@@ -238,7 +238,7 @@ function App() {
 
       <footer className="footer">
         {mode === "e2s"
-          ? "Words in the starter dictionary show a real sign; everything else is fingerspelled letter-by-letter. Sign images here are placeholders — swap the files in public/signs/ with real, licensed ASL images or clips."
+          ? "Words in the starter dictionary show a diagram of where the hand goes and how it moves, with written handshape instructions; everything else is fingerspelled letter-by-letter."
           : "Grade\u00A01 only — one cell per letter. The capital sign (dot\u00A06) marks the next letter as uppercase; the number sign (dots\u00A03-4-5-6) starts a run of digits."}
       </footer>
     </div>

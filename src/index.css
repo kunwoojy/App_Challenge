@@ -531,3 +531,130 @@ textarea:focus-visible {
     align-items: flex-start;
   }
 }
+
+/* ---- Grade toggle ---------------------------------------------------------- */
+
+.grade-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: -0.5rem 0 1.5rem;
+  flex-wrap: wrap;
+}
+
+.grade-btn {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--paper-line);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.grade-btn:hover {
+  border-color: var(--pine);
+}
+
+.grade-btn:focus-visible {
+  outline: 2px solid var(--pine);
+  outline-offset: 2px;
+}
+
+.grade-btn--active {
+  background: var(--pine);
+  border-color: var(--pine);
+  color: var(--paper);
+}
+
+.grade-hint {
+  font-weight: 400;
+  opacity: 0.8;
+  margin-left: 0.3rem;
+}
+
+/* ---- Notices --------------------------------------------------------------- */
+
+.notice {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.notice--error {
+  color: #8a2b1f;
+}
+
+.panel > .notice {
+  margin: 0;
+}
+
+/* ---- Line breaks inside the dot tray ------------------------------------ */
+
+.cell-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
+/* ---- Sign fallbacks ---------------------------------------------------------- */
+
+.sign-missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper-deep);
+  border: 1.5px dashed var(--paper-line);
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.thumb-fallback {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+}
+
+.sign-chip--skipped {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.key-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+/* Add to index.css (replaces the old .filmstrip-thumb img rule) */
+.sign-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 5rem;
+  color: var(--ink);
+  background: var(--paper-deep);
+  border: 1.5px solid var(--paper-line);
+}
+
+.sign-desc {
+  margin: 0;
+  max-width: 34rem;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.filmstrip-thumb {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--ink);
+}

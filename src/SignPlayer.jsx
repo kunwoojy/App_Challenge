@@ -1,15 +1,55 @@
 import { useEffect, useRef, useState } from "react";
 
-// Plays an ordered list of {src, alt, caption} frames one at a time,
-// like a slow filmstrip — used to "shift" through fingerspelled letters
-// or a multi-frame whole-word sign.
+// Inline SVG figure: head + shoulders, with a marker showing where the hand
+// is and an arrow/ring showing how it moves. No image files needed.
+function SignFigure({ motion, hands }) {
+  const { type, from, to } = motion;
+  const [fx, fy] = from;
+  const [tx, ty] = to || from;
+  return (
+    <svg viewBox="0 0 200 240" className="sign-stage-img" role="img" aria-label="Hand position and movement diagram">
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--pine)" />
+        </marker>
+      </defs>
+      <circle cx="100" cy="58" r="32" fill="none" stroke="var(--ink-soft)" strokeWidth="2" />
+      <line x1="100" y1="90" x2="100" y2="104" stroke="var(--ink-soft)" strokeWidth="2" />
+      <path d="M40 235 Q42 108 100 104 Q158 108 160 235" fill="none" stroke="var(--ink-soft)" strokeWidth="2" />
+
+      {type === "line" && (
+        <line x1={fx} y1={fy} x2={tx} y2={ty} stroke="var(--pine)" strokeWidth="3" strokeDasharray="5 4" markerEnd="url(#arrowhead)" />
+      )}
+      {type === "circle" && (
+        <circle cx={fx} cy={fy} r="20" fill="none" stroke="var(--pine)" strokeWidth="3" strokeDasharray="5 4" />
+      )}
+      {type === "tap" && (
+        <>
+          <line x1={fx} y1={fy - 16} x2={fx} y2={fy + 16} stroke="var(--pine)" strokeWidth="3" strokeDasharray="3 3" />
+          <text x={fx + 12} y={fy - 14} fontSize="12" fill="var(--pine-deep)" fontFamily="var(--font-mono)">x2</text>
+        </>
+      )}
+
+      <circle cx={fx} cy={fy} r="9" fill="var(--brass)" stroke="var(--brass-dark)" strokeWidth="2" />
+      {hands === 2 && <circle cx={200 - fx} cy={fy} r="9" fill="var(--brass)" stroke="var(--brass-dark)" strokeWidth="2" />}
+    </svg>
+  );
+}
+
+function LetterCard({ letter }) {
+  return (
+    <div className="sign-stage-img sign-letter" aria-hidden="true">
+      {letter}
+    </div>
+  );
+}
+
 function SignPlayer({ frames }) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speedMs, setSpeedMs] = useState(700);
+  const [speedMs, setSpeedMs] = useState(1100);
   const timerRef = useRef(null);
 
-  // Reset to the start whenever the underlying sentence changes.
   useEffect(() => {
     setIndex(0);
     setPlaying(false);
@@ -34,25 +74,38 @@ function SignPlayer({ frames }) {
   }
 
   const current = frames[Math.min(index, frames.length - 1)];
-
-  const restart = () => {
-    setIndex(0);
-    setPlaying(true);
-  };
+  const atEnd = index >= frames.length - 1;
 
   return (
     <div className="sign-player">
-      <div className="sign-stage">
-        <img src={current.src} alt={current.alt} className="sign-stage-img" />
+      <div className="sign-stage" aria-live="polite">
+        {current.kind === "letter" ? (
+          <LetterCard letter={current.letter} />
+        ) : (
+          <SignFigure motion={current.motion} hands={current.hands} />
+        )}
         <p className="sign-caption">{current.caption}</p>
+        <p className="sign-desc">
+          <strong>Handshape:</strong> {current.handshape}
+        </p>
+        <p className="sign-desc">
+          <strong>Movement:</strong> {current.movement}
+        </p>
       </div>
 
       <div className="sign-controls">
         <button
           className="key-btn"
-          onClick={() => (index >= frames.length - 1 ? restart() : setPlaying((p) => !p))}
+          onClick={() => {
+            if (atEnd) {
+              setIndex(0);
+              setPlaying(true);
+            } else {
+              setPlaying((p) => !p);
+            }
+          }}
         >
-          {index >= frames.length - 1 ? "Replay" : playing ? "Pause" : "Play"}
+          {atEnd ? "Replay" : playing ? "Pause" : "Play"}
         </button>
         <button
           className="key-btn key-btn--ghost"
@@ -70,7 +123,7 @@ function SignPlayer({ frames }) {
             setPlaying(false);
             setIndex((i) => Math.min(frames.length - 1, i + 1));
           }}
-          disabled={index >= frames.length - 1}
+          disabled={atEnd}
         >
           Next
         </button>
@@ -79,8 +132,8 @@ function SignPlayer({ frames }) {
           Speed
           <input
             type="range"
-            min={300}
-            max={1500}
+            min={400}
+            max={2000}
             step={100}
             value={speedMs}
             onChange={(e) => setSpeedMs(Number(e.target.value))}
@@ -99,7 +152,7 @@ function SignPlayer({ frames }) {
             }}
             aria-label={f.caption}
           >
-            <img src={f.src} alt="" />
+            {f.kind === "letter" ? f.letter : f.frameIndex + 1}
           </button>
         ))}
       </div>
