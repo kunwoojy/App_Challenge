@@ -231,9 +231,15 @@ function App() {
 
       <main className="plate">
         <div className="plate-sweep" aria-hidden="true" />
-        {mode === "e2b" && <EnglishToBraille />}
-        {mode === "b2e" && <BrailleToEnglish />}
-        {mode === "e2s" && <EnglishToSign />}
+        <div hidden={mode !== "e2b"}>
+          <EnglishToBraille />
+        </div>
+        <div hidden={mode !== "b2e"}>
+          <BrailleToEnglish />
+        </div>
+        <div hidden={mode !== "e2s"}>
+          <EnglishToSign />
+        </div>
       </main>
 
       <footer className="footer">
